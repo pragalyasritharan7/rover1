@@ -46,6 +46,17 @@ app.include_router(strategies_router)
 app.include_router(ws_router)
 
 
+@app.get("/", tags=["Root"])
+def root():
+    """API root landing route."""
+    return {
+        "message": "Lost in Space — Rover Mission Control API is running!",
+        "health": "/health",
+        "docs": "/docs",
+        "frontend": "http://localhost:5173",
+    }
+
+
 @app.get("/health", tags=["Health"])
 def healthcheck():
     """Service health and readiness check."""
