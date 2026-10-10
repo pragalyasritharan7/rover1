@@ -42,13 +42,13 @@ export const Rover3DView: React.FC = () => {
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
 
-    // 1. Scene & Deep Martian Fog
+    // 1. Scene & Deep Martian Fog with Extended Horizon
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x2a0f07);
-    scene.fog = new THREE.FogExp2(0x3a140a, 0.0095);
+    scene.fog = new THREE.FogExp2(0x3a140a, 0.006);
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    // 2. Camera with Extended Far Plane for Wide Zoom Out
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1500);
     camera.position.set(0, 4, -8);
     cameraRef.current = camera;
 
@@ -63,25 +63,25 @@ export const Rover3DView: React.FC = () => {
 
     containerRef.current.appendChild(renderer.domElement);
 
-    // 4. OrbitControls with Zooming Enabled
+    // 4. OrbitControls with Unrestricted Zoom Out Range
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
-    controls.minDistance = 1.2;
-    controls.maxDistance = 140;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 1.0;
+    controls.maxDistance = 350; // Wide zoom out limit
     controls.maxPolarAngle = Math.PI / 2 - 0.01;
     controlsRef.current = controls;
 
     // 5. Directional Sun & Ambient Lighting
     const sunLight = new THREE.DirectionalLight(0xffb885, 2.2);
-    sunLight.position.set(45, 55, 35);
+    sunLight.position.set(60, 80, 50);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.camera.near = 1.0;
-    sunLight.shadow.camera.far = 180;
+    sunLight.shadow.camera.far = 300;
     sunLight.shadow.bias = -0.0003;
-    const d = 35;
+    const d = 60;
     sunLight.shadow.camera.left = -d;
     sunLight.shadow.camera.right = d;
     sunLight.shadow.camera.top = d;
@@ -137,8 +137,8 @@ export const Rover3DView: React.FC = () => {
             targetCamPos.y += Math.sin(elapsedTime * 1.5) * 0.03;
           }
 
-          cameraRef.current.position.lerp(targetCamPos, 0.1);
-          controlsRef.current.target.lerp(desiredCamTargetRef.current, 0.1);
+          cameraRef.current.position.lerp(targetCamPos, 0.09);
+          controlsRef.current.target.lerp(desiredCamTargetRef.current, 0.09);
 
           if (Math.abs(cameraRef.current.fov - desiredFovRef.current) > 0.05) {
             cameraRef.current.fov += (desiredFovRef.current - cameraRef.current.fov) * 0.1;
@@ -164,7 +164,7 @@ export const Rover3DView: React.FC = () => {
     };
   }, []);
 
-  // Calculate Vehicle Game Camera Positions Relative to Rover Heading & Zoom Factor
+  // Calculate Vehicle Game Camera Positions Relative to Rover Heading & Smooth Ultra-Wide Zoom Factor
   const updateVehicleGameCameraPreset = (mode: CameraMode3D) => {
     if (!roverModelRef.current) return;
     const pos = currentPosRef.current;
@@ -179,8 +179,9 @@ export const Rover3DView: React.FC = () => {
     };
 
     if (mode === 'CHASE_CAM') {
-      // 🏎️ Driving Chase Cam with Zoom
-      desiredCamPosRef.current.copy(transformOffset(0, 3.2 * zf, -7.5 * zf));
+      // 🏎️ Driving Chase Cam: Pulls back & elevates dynamically when zooming out
+      const heightBoost = zf > 1.4 ? (zf - 1.4) * 2.2 : 0;
+      desiredCamPosRef.current.copy(transformOffset(0, 3.2 * zf + heightBoost, -7.5 * zf));
       desiredCamTargetRef.current.copy(transformOffset(0, 1.2, 4.0));
       desiredFovRef.current = 45;
     } else if (mode === 'COCKPIT_CAM') {
@@ -189,26 +190,26 @@ export const Rover3DView: React.FC = () => {
       desiredCamTargetRef.current.copy(transformOffset(0.55, 2.7, 8.0));
       desiredFovRef.current = 55;
     } else if (mode === 'TOP_DOWN_MAP') {
-      // 🗺️ Overhead Mini-Map View with Zoom
-      desiredCamPosRef.current.set(pos.x, pos.y + 18.0 * zf, pos.z + 0.01);
+      // 🗺️ Overhead Mini-Map View with Wide Tactical Altitude Zoom
+      desiredCamPosRef.current.set(pos.x, pos.y + 20.0 * zf, pos.z + 0.01);
       desiredCamTargetRef.current.set(pos.x, pos.y + 0.5, pos.z);
       desiredFovRef.current = 35;
     } else if (mode === 'FREE_ORBIT') {
       // 🔄 Free Orbit Inspect Cam
-      desiredCamPosRef.current.copy(transformOffset(4.5 * zf, 2.5 * zf, 5.5 * zf));
+      desiredCamPosRef.current.copy(transformOffset(5.0 * zf, 3.0 * zf, 6.0 * zf));
       desiredCamTargetRef.current.set(pos.x, pos.y + 0.8, pos.z);
       desiredFovRef.current = 45;
     }
   };
 
-  // Zoom In / Zoom Out Action Handlers
+  // Enhanced Zoom In / Zoom Out Action Handlers
   const zoomIn = () => {
-    zoomFactorRef.current = Math.max(0.4, zoomFactorRef.current * 0.82);
+    zoomFactorRef.current = Math.max(0.25, zoomFactorRef.current * 0.78);
     updateVehicleGameCameraPreset(cameraMode);
   };
 
   const zoomOut = () => {
-    zoomFactorRef.current = Math.min(2.8, zoomFactorRef.current * 1.22);
+    zoomFactorRef.current = Math.min(6.0, zoomFactorRef.current * 1.28);
     updateVehicleGameCameraPreset(cameraMode);
   };
 
