@@ -1,5 +1,12 @@
 # Lost in Space — Rover Mission Control 🚀🪐
 
+[![CI](https://github.com/pragalyasritharan7/rover1/actions/workflows/ci.yml/badge.svg)](https://github.com/pragalyasritharan7/rover1/actions/workflows/ci.yml)
+![Tests](https://img.shields.io/badge/tests-28%20passed-brightgreen)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![React](https://img.shields.io/badge/react-18-61dafb)
+![Three.js](https://img.shields.io/badge/three.js-3D%20Rover-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Production-grade, full-stack simulation and mission control dashboard for an autonomous planetary rover navigating an unknown environment with partial observability, dynamic terrain hazards, and energy constraints.
 
 ---
