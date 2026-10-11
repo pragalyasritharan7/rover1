@@ -52,12 +52,12 @@ graph LR
 
 | Problem Challenge | Architectural Mechanism | Implementation File |
 | :--- | :--- | :--- |
-| **1. Unknown Environment & Partial Observability** | Separate `known_map` from ground-truth `true_map`. Bresenham Line-of-Sight sensor raycasting and dynamic frontier extraction bordering unexplored cells. | [`backend/engine/sensing.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/sensing.py) |
-| **2. Limited Energy Management** | Strict energy accounting per move ($1\text{J}$ open, $4\text{J}$ hazard), collection ($2\text{J}$), and transmission ($2\text{J}$). Edge-weighted A* pathfinding. | [`backend/engine/pathfinding.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/pathfinding.py) |
-| **3. High-Value Targets in Hazardous Terrain** | Hard Mode generator shielding maximum value sites behind rings of hazard terrain; Value-Aware ROI planner balancing payoff vs. traversal cost. | [`backend/engine/environment.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/environment.py)<br>[`backend/engine/strategies/value_aware.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/strategies/value_aware.py) |
-| **4. Balanced Exploration vs. Safe Return** | **Return-Safety Invariant**: Evaluated at every step ($E \le C_{\text{return}} + M_{\text{safety}}$). Overrides speculative exploration and locks navigation onto communication zones. | [`backend/engine/safety.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/safety.py) |
-| **5. Strategic Decision Impact** | Risk-Aware adaptive safety buffer that dynamically increases margin based on distance from base and surrounding hazard density. | [`backend/engine/strategies/risk_aware.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/strategies/risk_aware.py) |
-| **6. Dynamic Terrain Blocking Mid-Mission** | Mid-mission dynamic cave-ins that turn open cells into obstacles. Active planned path intersection triggers immediate A* replanning with visual alerts. | [`backend/engine/simulation.py`](file:///C:/Users/3ai1/.gemini/antigravity/scratch/rover-mission-control/backend/engine/simulation.py) |
+| **1. Unknown Environment & Partial Observability** | Separate `known_map` from ground-truth `true_map`. Bresenham Line-of-Sight sensor raycasting and dynamic frontier extraction bordering unexplored cells. | [`backend/engine/sensing.py`](backend/engine/sensing.py) |
+| **2. Limited Energy Management** | Strict energy accounting per move ($1\text{J}$ open, $4\text{J}$ hazard), collection ($2\text{J}$), and transmission ($2\text{J}$). Edge-weighted A* pathfinding. | [`backend/engine/pathfinding.py`](backend/engine/pathfinding.py) |
+| **3. High-Value Targets in Hazardous Terrain** | Hard Mode generator shielding maximum value sites behind rings of hazard terrain; Value-Aware ROI planner balancing payoff vs. traversal cost. | [`backend/engine/environment.py`](backend/engine/environment.py)<br>[`backend/engine/strategies/value_aware.py`](backend/engine/strategies/value_aware.py) |
+| **4. Balanced Exploration vs. Safe Return** | **Return-Safety Invariant**: Evaluated at every step ($E \le C_{\text{return}} + M_{\text{safety}}$). Overrides speculative exploration and locks navigation onto communication zones. | [`backend/engine/safety.py`](backend/engine/safety.py) |
+| **5. Strategic Decision Impact** | Risk-Aware adaptive safety buffer that dynamically increases margin based on distance from base and surrounding hazard density. | [`backend/engine/strategies/risk_aware.py`](backend/engine/strategies/risk_aware.py) |
+| **6. Dynamic Terrain Blocking Mid-Mission** | Mid-mission dynamic cave-ins that turn open cells into obstacles. Active planned path intersection triggers immediate A* replanning with visual alerts. | [`backend/engine/simulation.py`](backend/engine/simulation.py) |
 
 ---
 
@@ -163,7 +163,7 @@ rover-mission-control/
 │   │   ├── batch.py               # Multi-seed strategy benchmarking
 │   │   └── strategies/            # Greedy, Frontier, Risk-Aware, Value-Aware
 │   ├── cli.py                     # Headless CLI runner
-│   └── tests/                     # 20 Unit & integration tests
+│   └── tests/                     # 28 Unit & integration tests
 ├── frontend/
 │   ├── package.json
 │   ├── tsconfig.json
